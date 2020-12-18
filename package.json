@@ -12,10 +12,13 @@
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.7.2",
+    "get-video-duration": "^3.0.2",
     "koa": "^2.13.0",
     "koa-body": "^4.2.0",
     "koa-combine-routers": "^4.0.2",
-    "koa-router": "^9.1.0"
+    "koa-router": "^9.1.0",
+    "moment": "^2.29.1",
+    "moment-duration-format": "^2.3.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

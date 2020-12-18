@@ -1,7 +1,7 @@
 const Router = require('koa-router')
 const combineRouters = require('koa-combine-routers')
 
-const fileRouter = require('./files')
+const fileRouter = require('./file')
 
 const router = combineRouters(fileRouter)
 
