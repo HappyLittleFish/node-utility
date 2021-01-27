@@ -6,13 +6,21 @@ var momentDurationFormatSetup = require("moment-duration-format")
 
 momentDurationFormatSetup(moment)
 
+function hasMatch(filename, discard) {
+  if (discard instanceof RegExp) {
+    return !!filename.match(discard)
+  } else {
+    return filename.includes(discard)
+  }
+}
+
 class FileCtl {
   /**
    * 遍历路径，统一去除文件名中需要删除的标识
    * @param {} ctx
    */
   async modifyFilename(ctx) {
-    const { filePath, discard, replacer = "" } = ctx.request.body
+    let { filePath, discard, replacer = "" } = ctx.request.body
     const files = await fs
       .readdir(filePath, {
         withFileTypes: true,
@@ -20,7 +28,10 @@ class FileCtl {
       .catch((err) => {
         throw new Error(err)
       })
-
+    // 判断是否是正则字符串
+    if (discard.startsWith("/")) {
+      discard = eval(discard)
+    }
     const renameFile = FileCtl._renameFile(discard, replacer)
 
     const rec = (dirname, files) => {
@@ -33,14 +44,14 @@ class FileCtl {
           rec(dir, files)
 
           // 递归完成如果文件目录页需要修改，则修改目录
-          if (file.name.includes(discard)) {
+          if (hasMatch(file.name, discard)) {
             renameFile(dirname, file.name)
               .then(() => {})
               .catch((err) => {
                 throw new Error(err)
               })
           }
-        } else if (file.name.includes(discard)) {
+        } else if (hasMatch(file.name, discard)) {
           renameFile(dirname, file.name).catch((err) => {
             throw new Error(err)
           })
